@@ -27,7 +27,7 @@ OBJS := $(addprefix $(OBJ_DIREC), $(notdir $(SRCS:.c=.o)))
 all: $(NAME)
 
 $(NAME): $(OBJ_DIREC) $(OBJS)
-	@$(CC) $(OBJS) $(HEADERS) -o $(NAME)
+	@$(CC) $(OBJS) $(HEADERS) -o $(NAME) -pthread
 	@echo "Philosophers compilation: 100%"
 
 
