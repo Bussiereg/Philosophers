@@ -9,7 +9,7 @@
 	"type":"cppdbg",
 	"program":"${workspaceFolder}/philo",
 	"cwd":"${workspaceFolder}",
-	"args":["3", "3", "3", "3", "3"],
+	"args":["5"],
 	"request":"launch",
 	"MIMode":"gdb"
 	},
@@ -18,7 +18,7 @@
 		"type": "cppdbg",
 		"request": "launch",
 		"program": "${workspaceFolder}/philo",
-		"args": ["3", "3", "3", "3", "3"],
+		"args": ["5"],
 		"cwd": "${workspaceFolder}",
 		"environment": [],
 		"externalConsole": false,

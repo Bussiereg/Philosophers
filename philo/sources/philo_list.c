@@ -1,50 +1,38 @@
 #include "philosophers.h"
 
-philo_t	*philo_lstnew(int value, char **argv)
+void    insert_beginning(philo_t **tail, int value)
 {
-	philo_t         *head;
-    pthread_mutex_t LeftFork;
-
-	head = (philo_t *)malloc(sizeof(*head));
-	if (!head)
-		return (NULL);
-	head->PhiloNumber = value;
-    head->time_to_eat = atoi(argv[2]);
-    head->time_to_die = atoi(argv[3]);
-    head->time_to_sleep = atoi(argv[4]);
-    head->nb_of_meal = atoi(argv[5]);
-    head->Fork = LeftFork;
-    pthread_mutex_init(&LeftFork, NULL);
-	head->NextPhilo = NULL;
-    head->LastPhilo = NULL;
-	return (head);
+    philo_t *new_node;
+    
+    new_node = malloc(sizeof(philo_t));
+    if (!new_node)
+        return ;
+    new_node->PhiloNumber = value;
+    new_node->nb_of_meal = 0;
+    new_node->LastPhilo = NULL;
+    new_node->NextPhilo = *tail;
+    if (*tail != NULL)
+    {
+        (*tail)->LastPhilo = new_node;
+    }
+    *tail = new_node;
 }
 
-void	philo_lstadd_back(philo_t **lst, philo_t *new)
+void    insert_end(philo_t   **head, int value, condition_t arguments, pthread_mutex_t *lock_print)
 {
-	philo_t	*tmp;
+    philo_t  *new_node;
 
-	if (lst)
-	{
-		if (*lst == NULL)
-			*lst = new;
-		else
-		{
-			tmp = philo_lstlast(*lst);
-			tmp->NextPhilo = new;
-		}
-	}
-}
-
-philo_t	*philo_lstlast(philo_t *lst)
-{
-	if (lst == NULL)
-		return (lst);
-	while (lst->NextPhilo != NULL)
-	{
-		lst = lst->NextPhilo;
-	}
-	return (lst);
+    new_node = malloc(sizeof(philo_t));
+    if (!new_node)
+        return;
+    new_node->PhiloNumber = value;
+    new_node->lock_print = lock_print;
+    new_node->nb_of_meal = 0;
+    new_node->NextPhilo = NULL;
+    new_node->LastPhilo = *head;
+    new_node->arguments = arguments;
+    (*head)->NextPhilo = new_node;
+    *head = new_node;
 }
 
 void	print_list(philo_t *lst)
