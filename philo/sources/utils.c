@@ -1,23 +1,49 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gbussier <gbussier@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/21 17:06:14 by gbussier          #+#    #+#             */
+/*   Updated: 2023/09/21 17:06:58 by gbussier         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philosophers.h"
 
-void deallocate(philo_t **tail, philo_t **head, int NbPhilo)
+void	deallocate(philo_t **tail, philo_t **head, int NbPhilo)
 {
-    philo_t  *curr;
-    int i;
+	philo_t	*curr;
+	int		i;
 
-    i = 1;
-    if (*tail == NULL)
-        return ;
-    curr = *tail;
-    while (i < NbPhilo)
-    {
-        curr = curr->NextPhilo;
-        free(curr->LastPhilo);
-        i++;
-    }
-    free(curr);
-    *tail = NULL;
-    *head = NULL;    
+	i = 1;
+	if (*tail == NULL)
+		return ;
+	curr = *tail;
+	while (i < NbPhilo)
+	{
+		curr = curr->NextPhilo;
+		free(curr->LastPhilo);
+		i++;
+	}
+	free(curr);
+	*tail = NULL;
+	*head = NULL;
+}
+
+void	print_message(philo_t *Philo, char *mess, long timestamp)
+{
+	static int	die = 0;
+
+	pthread_mutex_lock(Philo->lock_print);
+	if (die == 0)
+	{
+		printf("%ld %d %s\n", timestamp, Philo->PhiloNumber, mess);
+		if (mess[0] == 'd')
+			die = 1;
+	}
+	pthread_mutex_unlock(Philo->lock_print);
 }
 
 int	ft_atoi(const char *str)
