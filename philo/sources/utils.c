@@ -12,19 +12,19 @@
 
 #include "philosophers.h"
 
-void	deallocate(philo_t **tail, philo_t **head, int NbPhilo)
+void	deallocate(t_philo **tail, t_philo **head, int philo_nb)
 {
-	philo_t	*curr;
+	t_philo	*curr;
 	int		i;
 
 	i = 1;
 	if (*tail == NULL)
 		return ;
 	curr = *tail;
-	while (i < NbPhilo)
+	while (i < philo_nb)
 	{
-		curr = curr->NextPhilo;
-		free(curr->LastPhilo);
+		curr = curr->next_philo;
+		free(curr->last_philo);
 		i++;
 	}
 	free(curr);
@@ -32,18 +32,18 @@ void	deallocate(philo_t **tail, philo_t **head, int NbPhilo)
 	*head = NULL;
 }
 
-void	print_message(philo_t *Philo, char *mess, long timestamp)
+void	print_message(t_philo *philo, char *mess, long timestamp)
 {
 	static int	die = 0;
 
-	pthread_mutex_lock(Philo->lock_print);
+	pthread_mutex_lock(philo->lock_print);
 	if (die == 0)
 	{
-		printf("%ld %d %s\n", timestamp, Philo->PhiloNumber, mess);
+		printf("%ld %d %s\n", timestamp, philo->philo_nb, mess);
 		if (mess[0] == 'd')
 			die = 1;
 	}
-	pthread_mutex_unlock(Philo->lock_print);
+	pthread_mutex_unlock(philo->lock_print);
 }
 
 int	ft_atoi(const char *str)

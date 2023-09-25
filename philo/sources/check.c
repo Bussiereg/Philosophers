@@ -6,76 +6,121 @@
 /*   By: gbussier <gbussier@student.42berlin.d      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/21 17:00:08 by gbussier          #+#    #+#             */
-/*   Updated: 2023/09/21 17:00:59 by gbussier         ###   ########.fr       */
+/*   Updated: 2023/09/25 15:43:38 by gbussier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philosophers.h>
 
-int	check_death(philo_t *Philo, long last_meal_date, char *activity)
+int	check_sleep(t_philo *philo, long last_meal_date, char *activity)
 {
-	long	temp;
-
-	temp = 0;
 	if (ft_strncmp(activity, "sleep", ft_strlen(activity)) == 0)
 	{
-		temp = time_since_last_meal(Philo->arguments, last_meal_date) + Philo->arguments.time_to_sleep;
-		if (temp > Philo->arguments.time_to_die)
+		if (time_since_last_meal(philo->arg, last_meal_date) 
+			+ philo->arg.time_to_sleep > philo->arg.time_to_die)
 		{
-			print_message(Philo, "is sleeping", gettimestamp(Philo->arguments));
-			usleep((Philo->arguments.time_to_die - Philo->arguments.time_to_sleep) * 1000);
-			print_message(Philo, "died", gettimestamp(Philo->arguments));
-			Philo->death = Philo->PhiloNumber;
+			print_message(philo, "is sleeping", gettimestamp(philo->arg));
+			usleep((philo->arg.time_to_die
+					- time_since_last_meal(philo->arg, last_meal_date)) * 1000);
+			print_message(philo, "died", gettimestamp(philo->arg));
+			philo->death = philo->philo_nb;
+			return (1);
+		}
+	}
+	return (0);
+}
+
+int	check_death(t_philo *philo, long lastmeal, char *activity)
+{
+	if (check_sleep(philo, lastmeal, activity) == 1)
+		return (1);
+	else if (ft_strncmp(activity, "eat", ft_strlen(activity)) == 0)
+	{
+		if (time_since_last_meal(philo->arg, lastmeal) 
+			+ philo->arg.time_to_eat > philo->arg.time_to_die)
+		{
+			usleep((philo->arg.time_to_die
+					- time_since_last_meal(philo->arg, lastmeal)) * 1000);
+			print_message(philo, "died", gettimestamp(philo->arg));
+			philo->death = philo->philo_nb;
 			return (1);
 		}
 	}
 	else if (ft_strncmp(activity, "death", ft_strlen(activity)) == 0)
 	{
-		temp = time_since_last_meal(Philo->arguments, last_meal_date);
-		if (temp > Philo->arguments.time_to_die)
+		if (time_since_last_meal(philo->arg, lastmeal) > philo->arg.time_to_die)
 		{
-			print_message(Philo, "died", gettimestamp(Philo->arguments));
-			Philo->death = Philo->PhiloNumber;
+			print_message(philo, "died", gettimestamp(philo->arg));
+			philo->death = philo->philo_nb;
 			return (1);
 		}
 	}
 	return (0);
 }
 
-int	check_death2(philo_t *Philo)
+int	check_death_table(t_philo *philo, t_cond argument)
 {
-	philo_t	*curr;
+	t_philo	*curr;
 	int		i;
 
 	i = 0;
-	curr = Philo;
-	while (i < Philo->arguments.number_of_philosophers)
+	curr = philo;
+	while (i < philo->arg.number_of_philosophers)
 	{
 		if (curr->death > 0)
+		{
+			while (i < argument.number_of_philosophers)
+			{
+				if (i + 1 == curr->death)
+					pthread_join(curr->philosopher, NULL);
+				else
+					pthread_detach(curr->philosopher);
+				curr = curr->next_philo;
+				i++;
+			}
 			return (1);
-		curr = curr->NextPhilo;
+		}
+		curr = curr->next_philo;
 		i++;
 	}
 	return (0);
 }
 
-int	check_meal(philo_t *Philo)
+int	check_meal(t_philo *philo, t_cond argument, int i, int j)
 {
-	philo_t	*curr;
-	int		nb_satiated_philo;
-	int		i;
+	t_philo	*curr;
 
-	i = 0;
-	nb_satiated_philo = 0;
-	curr = Philo;
-	while (i < curr->arguments.number_of_philosophers)
+	curr = philo;
+	if (argument.argc != 6)
+		return (0);
+	while (i++ < curr->arg.number_of_philosophers)
 	{
-		if (curr->nb_of_meal >= curr->arguments.number_of_meal)
-			nb_satiated_philo++;
-		curr = curr->NextPhilo;
-		i++;
+		if (curr->nb_of_meal >= curr->arg.number_of_meal)
+			j++;
+		curr = curr->next_philo;
 	}
-	if (nb_satiated_philo == Philo->arguments.number_of_philosophers)
+	if (j == philo->arg.number_of_philosophers)
+	{
+		while (i++ < argument.number_of_philosophers)
+		{
+			pthread_detach(curr->philosopher);
+			curr = curr->next_philo;
+		}
 		return (1);
+	}
 	return (0);
+}
+
+int	check_input( int argc, char **argv)
+{
+	if (argc < 5 || argc > 6)
+	{
+		printf("1: ./philo\n2: number_of_philosophers\n3: time_to_die\n");
+		printf("4: time_to_eat\n5: time_to_sleep\n");
+		printf("6: [number_of_times_each_philosophers_must_eat]\n");
+		return (0);
+	}
+	if (ft_atoi(argv[1]) == 0)
+		return (0);
+	return (1);
 }
