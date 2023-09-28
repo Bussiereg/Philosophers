@@ -10,8 +10,10 @@ OBJ_DIREC := build/
 
 # -----------\ Compilation \-------------------------------------------------- #
 
-CFLAGS	:= -Wextra -Wall -Werror -g
-MD		:= -mkdir -p
+CFLAGS		:= -Wextra -Wall -Werror -g -pthread 
+FSANITIZE 	:= -fsanitize=address -fsanitize=thread
+MD			:= -mkdir -p
+CC			:= gcc
 
 # -----------\ Files & sources \---------------------------------------------- #
 
@@ -27,12 +29,12 @@ OBJS := $(addprefix $(OBJ_DIREC), $(notdir $(SRCS:.c=.o)))
 all: $(NAME)
 
 $(NAME): $(OBJ_DIREC) $(OBJS)
-	@$(CC) $(OBJS) $(HEADERS) -o $(NAME) -pthread
+	@$(CC) $(CFLAGS) $(OBJS) $(HEADERS) -o $(NAME)
 	@echo "Philosophers compilation: 100%"
 
 
 $(OBJ_DIREC)%.o: $(SRC_DIREC)%.c
-	@$(CC) $(CFLAGS) -o $@ -c $< $(HEADERS) && printf "Compiling: $(notdir $<)\n"
+	@$(CC) -o $@ -c $< $(HEADERS) && printf "Compiling: $(notdir $<)\n"
 
 $(OBJ_DIREC):
 	@$(MD) $(OBJ_DIREC)

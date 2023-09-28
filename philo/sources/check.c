@@ -120,7 +120,7 @@ int	check_input( int argc, char **argv)
 		printf("6: [number_of_times_each_philosophers_must_eat]\n");
 		return (0);
 	}
-	if (ft_atoi(argv[1]) == 0)
+	if (ft_atoi(argv[1]) <= 0)
 		return (0);
 	return (1);
 }

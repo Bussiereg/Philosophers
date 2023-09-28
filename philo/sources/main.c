@@ -59,6 +59,7 @@ void	close_simulation(t_philo *tail, t_cond argument)
 			break ;
 		else if (check_meal(tail, argument, 0, 0) == 1)
 			break ;
+		usleep(2000);
 	}
 	usleep(10000);
 	while (i < argument.number_of_philosophers)
@@ -105,6 +106,7 @@ int	main(int argc, char **argv)
 	init_args(&arg, argv, argc);
 	init_table(&head, &tail, &arg, &lock_print);
 	init_simulation(tail, argv);
+	usleep(10000);
 	close_simulation(tail, arg);
 	pthread_mutex_destroy(&lock_print);
 	deallocate(&tail, &head, arg.number_of_philosophers);
