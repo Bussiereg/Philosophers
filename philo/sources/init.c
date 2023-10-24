@@ -12,18 +12,34 @@
 
 #include "philosophers.h"
 
-void	init(t_philo **tl, t_philo **hd, t_cond *arg, pthread_mutex_t *lp)
+void	init_mtx(t_mutex *mtxhelp)
+{
+	pthread_mutex_init(&mtxhelp->mtx_print, NULL);
+	pthread_mutex_init(&mtxhelp->mtx_death, NULL);
+	pthread_mutex_init(&mtxhelp->mtx_meal, NULL);
+	mtxhelp->stat_death = 0;
+	mtxhelp->stat_print = 0;
+	mtxhelp->count_meal = 0;
+}
+
+void	init(t_philo **tl, t_philo **hd, t_cond *arg)
 {
 	t_philo	*new_node;
+	t_mutex	*mtxhelp;
 
+	mtxhelp = malloc(sizeof(t_mutex));
+	if (!mtxhelp)
+		return ;
+	init_mtx(mtxhelp);
 	new_node = malloc(sizeof(t_philo));
 	if (!new_node)
 		return ;
+	pthread_mutex_init(&new_node->fork, NULL);
+	pthread_mutex_init(&new_node->mtx_stat_fork, NULL);
 	new_node->philo_nb = 1;
-	new_node->lock_print = lp;
 	new_node->nb_of_meal = 0;
-	new_node->fork_tatus = 0;
-	new_node->death = 0;
+	new_node->mutx_help = mtxhelp;
+	new_node->stat_fork = 0;
 	new_node->last_philo = NULL;
 	new_node->next_philo = NULL;
 	new_node->arg = *arg;
@@ -31,15 +47,15 @@ void	init(t_philo **tl, t_philo **hd, t_cond *arg, pthread_mutex_t *lp)
 	*hd = new_node;
 }
 
-void	init_table(t_philo **hd, t_philo **tl, t_cond *ag, pthread_mutex_t *lp)
+void	init_table(t_philo **hd, t_philo **tl, t_cond *ag)
 {
 	int	i;
 
 	i = 2;
-	init(tl, hd, ag, lp);
+	init(tl, hd, ag);
 	while (i <= ag->number_of_philosophers)
 	{
-		insert_end(hd, i, *ag, lp);
+		insert_end(hd, i, *ag);
 		i++;
 	}
 	(*tl)->last_philo = *hd;

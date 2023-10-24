@@ -24,26 +24,30 @@ void	deallocate(t_philo **tail, t_philo **head, int philo_nb)
 	while (i < philo_nb)
 	{
 		curr = curr->next_philo;
+		pthread_mutex_destroy(&curr->last_philo->fork);
+		pthread_mutex_destroy(&curr->last_philo->mtx_stat_fork);
 		free(curr->last_philo);
+		curr->last_philo = NULL;
 		i++;
 	}
+	pthread_mutex_destroy(&curr->fork);
+	pthread_mutex_destroy(&curr->mtx_stat_fork);
 	free(curr);
+	curr = NULL;
 	*tail = NULL;
 	*head = NULL;
 }
 
 void	print_message(t_philo *philo, char *mess, long timestamp)
 {
-	static int	die = 0;
-
-	pthread_mutex_lock(philo->lock_print);
-	if (die == 0)
+	pthread_mutex_lock(&(philo->mutx_help->mtx_print));
+	if (philo->mutx_help->stat_print == 0)
 	{
 		printf("%ld %d %s\n", timestamp, philo->philo_nb, mess);
 		if (mess[0] == 'd')
-			die = 1;
+			philo->mutx_help->stat_print = 1;
 	}
-	pthread_mutex_unlock(philo->lock_print);
+	pthread_mutex_unlock(&(philo->mutx_help->mtx_print));
 }
 
 int	ft_atoi(const char *str)
