@@ -35,7 +35,6 @@ To get started with the Philosophers project, follow these steps:
 Here are some resources that may be helpful as you work on the Philosophers project:
 
 - [Wikipedia: Dining philosophers problem](https://en.wikipedia.org/wiki/Dining_philosophers_problem)
-- [Concurrency in C - Tutorialspoint](https://www.tutorialspoint.com/concurrency_in_c/index.htm)
 - [POSIX Threads Programming - GeeksforGeeks](https://www.geeksforgeeks.org/multithreading-c-2/)
 - [Mutex and Semaphores - Tutorialspoint](https://www.tutorialspoint.com/operating_system/os_mutex.htm)
 
