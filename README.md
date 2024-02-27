@@ -25,10 +25,7 @@ To get started with the Philosophers project, follow these steps:
 
 1. Clone this repository to your local machine.
 2. Navigate to the project directory.
-3. Read the project instructions and requirements carefully.
-4. Implement your solution in the specified programming language.
-5. Test your implementation thoroughly to ensure correctness and robustness.
-6. Submit your solution according to the project submission guidelines.
+3. Execute the program according to the subject.
 
 ## Resources
 
@@ -36,8 +33,4 @@ Here are some resources that may be helpful as you work on the Philosophers proj
 
 - [Wikipedia: Dining philosophers problem](https://en.wikipedia.org/wiki/Dining_philosophers_problem)
 - [POSIX Threads Programming - GeeksforGeeks](https://www.geeksforgeeks.org/multithreading-c-2/)
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
